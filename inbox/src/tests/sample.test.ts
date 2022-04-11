@@ -1,9 +1,9 @@
 // contract test code will go here
-const assert = require('assert');
+import assert from 'assert';
 
 beforeEach((...args) => {
-  console.debug('Hello');
-  console.debug({ args });
+  // console.debug('Hello');
+  // console.debug({ args });
 });
 
 describe('Add', () => {
