@@ -11,8 +11,7 @@ contract Lottery {
         manager = msg.sender;
     }
 
-    function enter() public payable {
-        require(!finished);
+    function enter() public payable notFinished {
         require(msg.value == 0.01 ether);
         players.push(msg.sender);
     }
@@ -26,8 +25,7 @@ contract Lottery {
         return uint256(keccak256(seed));
     }
 
-    function pickWinner() public restricted {
-        require(!finished);
+    function pickWinner() public onlyManager notFinished {
         finished = true;
         uint256 index = random() % players.length;
         winner = players[index];
@@ -42,8 +40,13 @@ contract Lottery {
         return address(this).balance;
     }
 
-    modifier restricted() {
+    modifier onlyManager() {
         require(msg.sender == manager);
+        _;
+    }
+
+    modifier notFinished() {
+        require(!finished);
         _;
     }
 }
