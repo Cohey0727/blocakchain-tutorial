@@ -1,3 +1,22 @@
+# Lottery Frontend
+
+## How to get started
+
+```shell
+git clone hogehoge
+cd lottery-frontend
+yarn
+yarn start
+```
+
+## How to setup web3
+
+reference
+https://github.com/ChainSafe/web3.js#web3-and-create-react-app
+
+## Initial README.md
+
+```md
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -44,3 +63,4 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+```
