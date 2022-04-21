@@ -42,11 +42,13 @@ contract Lottery {
 
     modifier onlyManager() {
         require(msg.sender == manager);
+        // call modified function
         _;
     }
 
     modifier notFinished() {
         require(!finished);
+        // call modified function
         _;
     }
 }

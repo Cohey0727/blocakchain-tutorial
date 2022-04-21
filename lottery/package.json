@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "author": "",
+  "license": "ISC",
   "scripts": {
     "test": "tsc && mocha dist/tests/*.js",
     "deploy": "tsc && node --require dotenv/config dist/deploy.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.6",
     "dotenv": "^16.0.0",
