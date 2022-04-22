@@ -5,7 +5,7 @@ import Result from "antd/lib/result";
 import React, { useCallback } from "react";
 import { Column } from "../components";
 import { screenLoadingVar } from "../Layout";
-import { accountVar, connectWeb3, web3Var } from "../web3";
+import { accountVar, connectWeb3 } from "../web3";
 
 const MyPage: React.FC = () => {
   const account = useReactiveVar(accountVar);
