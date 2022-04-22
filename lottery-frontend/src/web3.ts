@@ -12,7 +12,7 @@ const accountVar = makeVar<string | null>(null);
 
 const connectWeb3 = async () => {
   await ethereum.request({ method: "eth_requestAccounts" });
-  const web3 = new Web3(window.ethereum);
+  const web3 = new Web3(ethereum);
   const accounts = await web3.eth.getAccounts();
   if (accounts.length !== 0) {
     web3Var(web3);
