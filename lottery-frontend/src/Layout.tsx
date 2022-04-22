@@ -1,9 +1,10 @@
-import { Layout, Menu, Breadcrumb, MenuProps } from "antd";
+import { Layout, Menu, MenuProps } from "antd";
 import { makeVar, useReactiveVar } from "@apollo/client";
 import { Outlet, Link } from "@tanstack/react-location";
 import { DesktopOutlined, PieChartOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import LoadingBackdrop from "./components/LoadingBackdrop";
+import { css } from "@emotion/css";
 const { Header, Content, Footer, Sider } = Layout;
 
 export const screenLoadingVar = makeVar(false);
@@ -32,27 +33,33 @@ function SiderDemo() {
   const loading = useReactiveVar(screenLoadingVar);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
-      </Sider>
-      <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0 }} />
-        <LoadingBackdrop loading={loading}>
-          <Content style={{ margin: "0 16px" }}>
+    <LoadingBackdrop loading={loading}>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+          <div className="logo" />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            items={items}
+          />
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="site-layout-background" style={{ padding: 0 }} />
+          <Content className={styles.content}>
             <Outlet />
           </Content>
           <Footer style={{ textAlign: "center" }}>Ether Lottery ©2022</Footer>
-        </LoadingBackdrop>
+        </Layout>
       </Layout>
-    </Layout>
+    </LoadingBackdrop>
   );
 }
+
+const styles = {
+  content: css`
+    margin: 0 16px;
+  `,
+};
 
 export default SiderDemo;
