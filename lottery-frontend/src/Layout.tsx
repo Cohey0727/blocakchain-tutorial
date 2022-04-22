@@ -1,31 +1,35 @@
 import { Layout, Menu, Breadcrumb, MenuProps } from "antd";
-import {
-  DesktopOutlined,
-  PieChartOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { makeVar, useReactiveVar } from "@apollo/client";
+import { Outlet, Link } from "@tanstack/react-location";
+import { DesktopOutlined, PieChartOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-
+import LoadingBackdrop from "./components/LoadingBackdrop";
 const { Header, Content, Footer, Sider } = Layout;
 
-type MenuItem = Required<MenuProps>["items"][number];
+export const screenLoadingVar = makeVar(false);
 
-function getItem(label: React.ReactNode, icon?: React.ReactNode): MenuItem {
+type MenuItemType = Required<MenuProps>["items"][number];
+
+function MenuItem(
+  label: React.ReactNode,
+  path: string,
+  icon?: React.ReactNode
+) {
   return {
-    key: label,
+    key: path,
     icon,
-    label,
-  } as MenuItem;
+    label: <Link to={path}>{label}</Link>,
+  } as MenuItemType;
 }
 
-const items: MenuItem[] = [
-  getItem("My Page", <PieChartOutlined />),
-  getItem("Entry Lottery", <DesktopOutlined />),
-  getItem("Lottery Result", <UserOutlined />),
+const items: MenuItemType[] = [
+  MenuItem("My Page", "/mypage", <PieChartOutlined />),
+  MenuItem("Lottery", "/lotteries", <DesktopOutlined />),
 ];
 
 function SiderDemo() {
   const [collapsed, setCollapsed] = useState(false);
+  const loading = useReactiveVar(screenLoadingVar);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -40,19 +44,12 @@ function SiderDemo() {
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }} />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
-          <div
-            className="site-layout-background"
-            style={{ padding: 24, minHeight: 360 }}
-          >
-            Bill is a cat.
-          </div>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>Ether Lottery ©2022</Footer>
+        <LoadingBackdrop loading={loading}>
+          <Content style={{ margin: "0 16px" }}>
+            <Outlet />
+          </Content>
+          <Footer style={{ textAlign: "center" }}>Ether Lottery ©2022</Footer>
+        </LoadingBackdrop>
       </Layout>
     </Layout>
   );
