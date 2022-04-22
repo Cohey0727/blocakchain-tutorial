@@ -27,4 +27,4 @@ ethereum.on("accountsChanged", async () => {
   connectWeb3();
 });
 
-export { accountVar, connectWeb3 };
+export { accountVar, web3Var, connectWeb3 };

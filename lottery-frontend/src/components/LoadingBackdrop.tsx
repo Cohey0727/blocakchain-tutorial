@@ -1,14 +1,14 @@
 import { css } from "@emotion/css";
-import { Spin, Space } from "antd";
+import { Spin } from "antd";
 import clsx from "clsx";
 
 type LoadingBackdropProps = {
-  loading: boolean;
-  children: React.ReactNode;
+  loading?: boolean;
+  children?: React.ReactNode;
 };
 
 const LoadingBackdrop: React.FC<LoadingBackdropProps> = (props) => {
-  const { children, loading } = props;
+  const { children, loading = true } = props;
   return (
     <div className={styles.root}>
       {children}

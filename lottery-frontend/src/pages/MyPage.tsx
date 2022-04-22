@@ -1,11 +1,15 @@
 import { useReactiveVar } from "@apollo/client";
 import { css } from "@emotion/css";
+
 import Button from "antd/lib/button";
 import Result from "antd/lib/result";
+import Typography from "antd/lib/typography";
 import React, { useCallback } from "react";
 import { Column } from "../components";
 import { screenLoadingVar } from "../Layout";
 import { accountVar, connectWeb3 } from "../web3";
+
+const { Paragraph } = Typography;
 
 const MyPage: React.FC = () => {
   const account = useReactiveVar(accountVar);
@@ -24,7 +28,11 @@ const MyPage: React.FC = () => {
         <Result
           status="success"
           title="Successfully Connect Web3!"
-          subTitle={`Your Account: ${account}`}
+          subTitle={
+            <Typography>
+              Your Account: <Paragraph copyable>{account}</Paragraph>
+            </Typography>
+          }
         />
       ) : (
         <Result
