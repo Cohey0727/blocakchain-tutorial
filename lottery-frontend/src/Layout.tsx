@@ -1,11 +1,11 @@
-import { Layout, Menu, MenuProps } from "antd";
+import { Layout as BaseLayout, Menu, MenuProps } from "antd";
 import { makeVar, useReactiveVar } from "@apollo/client";
 import { Outlet, Link } from "@tanstack/react-location";
 import { DesktopOutlined, PieChartOutlined } from "@ant-design/icons";
 import React, { Suspense, useState } from "react";
 import LoadingBackdrop from "./components/LoadingBackdrop";
 import { css } from "@emotion/css";
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Footer, Sider } = BaseLayout;
 
 export const screenLoadingVar = makeVar(false);
 
@@ -28,31 +28,31 @@ const items: MenuItemType[] = [
   MenuItem("Lottery", "/lotteries", <DesktopOutlined />),
 ];
 
-function SiderDemo() {
+function Layout() {
   const [collapsed, setCollapsed] = useState(false);
   const loading = useReactiveVar(screenLoadingVar);
 
   return (
-    <LoadingBackdrop loading={loading}>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-          <div className="logo" />
-          <Menu
-            theme="dark"
-            defaultSelectedKeys={["1"]}
-            mode="inline"
-            items={items}
-          />
-        </Sider>
-        <Layout className="site-layout">
+    <BaseLayout style={{ minHeight: "100vh" }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+        <div className="logo" />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={items}
+        />
+      </Sider>
+      <BaseLayout className="site-layout">
+        <LoadingBackdrop loading={loading}>
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content className={styles.content}>
             <Outlet />
           </Content>
           <Footer style={{ textAlign: "center" }}>Ether Lottery ©2022</Footer>
-        </Layout>
-      </Layout>
-    </LoadingBackdrop>
+        </LoadingBackdrop>
+      </BaseLayout>
+    </BaseLayout>
   );
 }
 
@@ -62,4 +62,4 @@ const styles = {
   `,
 };
 
-export default SiderDemo;
+export default Layout;

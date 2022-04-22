@@ -66,17 +66,13 @@ describe('Lottery', () => {
       value: web3.utils.toWei('0.01', 'ether'),
     });
     const initialBalance = Number(await web3.eth.getBalance(data.accounts[1]));
-    let isFinished = await data.lottery.methods.finished().call();
-    assert.ok(!isFinished);
     await data.lottery.methods.pickWinner().send({ from: data.accounts[0] });
-    isFinished = await data.lottery.methods.finished().call();
-    const winner = await data.lottery.methods.winner().call();
+    const prevWinner = await data.lottery.methods.prevWinner().call();
 
     const finalBalance = Number(await web3.eth.getBalance(data.accounts[1]));
     const difference = finalBalance - initialBalance;
     assert.ok(difference > Number(web3.utils.toWei('0.009', 'ether')));
-    assert.equal(data.accounts[1], winner);
-    assert.ok(isFinished);
+    assert.equal(data.accounts[1], prevWinner);
   });
   it('not manager can not pick up winner', async () => {
     await data.lottery.methods.enter().send({

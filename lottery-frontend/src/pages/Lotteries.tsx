@@ -1,13 +1,14 @@
 import { useReactiveVar } from "@apollo/client";
 import { css } from "@emotion/css";
+import { Tooltip } from "antd";
 
 import Button from "antd/lib/button";
 import Typography from "antd/lib/typography";
 import React, { useCallback, useMemo } from "react";
 import Web3 from "web3";
-import { Column, KeyValueList } from "../components";
-import LoadingBackdrop from "../components/LoadingBackdrop";
-import { useAsyncMemo } from "../hooks";
+import UpCircleOutlined from "@ant-design/icons/UpCircleOutlined";
+
+import { Column, KeyValueList, Row } from "../components";
 import { getLottery, useLotteryInfo } from "../lottery";
 import { accountVar, web3Var } from "../web3";
 
@@ -30,10 +31,14 @@ const Lotteries: React.FC<LotteriesInnerProps> = (props) => {
     });
   }, [account, web3]);
 
+  const handleWinnerPickup = useCallback(async () => {
+    await lottery.methods.pickWinner().send({ from: account });
+  }, [account, web3]);
+
   if (!lotteryInfo) {
-    return <LoadingBackdrop />;
+    return <></>;
   }
-  const { manager, players, winner, balance, finished } = lotteryInfo;
+  const { manager, players, prevWinner, balance, network } = lotteryInfo;
   const listItems = [
     {
       key: "Manager",
@@ -48,20 +53,18 @@ const Lotteries: React.FC<LotteriesInnerProps> = (props) => {
       value: players.join(", "),
     },
     {
-      key: "Winner",
-      value: <Text copyable>{winner}</Text>,
+      key: "PrevWinner",
+      value: <Text copyable>{prevWinner}</Text>,
     },
     {
       key: "Balance",
       value: `${web3.utils.fromWei(balance, "ether")} ETH`,
     },
     {
-      key: "Finished?",
-      value: `${finished}`,
+      key: "Network",
+      value: network,
     },
   ];
-
-  console.log(lotteryInfo);
 
   return (
     <Column className={styles.root}>
@@ -71,9 +74,29 @@ const Lotteries: React.FC<LotteriesInnerProps> = (props) => {
           items={listItems}
           classes={{ root: styles.lotteryInfo }}
         />
-        <Button disabled={finished} onClick={handleEntryClick}>
-          Lottery Entry
-        </Button>
+        <Row className={styles.actions}>
+          <Button
+            type="primary"
+            icon={<UpCircleOutlined />}
+            onClick={handleEntryClick}
+            className={styles.entryButton}
+          >
+            Lottery Entry
+          </Button>
+          <Tooltip
+            placement="bottom"
+            title="Only Manager"
+            visible={manager === account ? false : undefined}
+          >
+            <Button
+              disabled={manager !== account}
+              className={styles.entryButton}
+              onClick={handleWinnerPickup}
+            >
+              Lottery Finish
+            </Button>
+          </Tooltip>
+        </Row>
       </Column>
     </Column>
   );
@@ -86,9 +109,11 @@ export default (props: LotteriesProps) => {
     if (!web3) return null;
     return getLottery(web3);
   }, [web3]);
+
   if (!web3 || !lottery || !account) {
-    return <LoadingBackdrop />;
+    return <></>;
   }
+
   return (
     <Lotteries {...props} web3={web3} lottery={lottery} account={account} />
   );
@@ -104,5 +129,11 @@ const styles = {
   `,
   lotteryInfo: css`
     margin-bottom: 16px;
+  `,
+  actions: css`
+    justify-content: flex-end;
+  `,
+  entryButton: css`
+    margin-right: 8px;
   `,
 };

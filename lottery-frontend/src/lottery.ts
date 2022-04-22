@@ -16,17 +16,18 @@ export const useLotteryInfo = (
     async () => {
       const managerPromise = lottery.methods.manager().call();
       const playersPromise = lottery.methods.getPlayers().call();
-      const winnerPromise = lottery.methods.winner().call();
+      const prevWinnerPromise = lottery.methods.prevWinner().call();
       const balancePromise = web3.eth.getBalance(lottery.options.address);
-      const finishedPromise = lottery.methods.finished().call();
-      const [manager, players, winner, balance, finished] = await Promise.all([
-        managerPromise,
-        playersPromise,
-        winnerPromise,
-        balancePromise,
-        finishedPromise,
-      ]);
-      return { manager, players, winner, balance, finished };
+      const networkTypePromise = web3.eth.net.getNetworkType();
+      const [manager, players, prevWinner, balance, network] =
+        await Promise.all([
+          managerPromise,
+          playersPromise,
+          prevWinnerPromise,
+          balancePromise,
+          networkTypePromise,
+        ]);
+      return { manager, players, prevWinner, balance, network };
     },
     null,
     [lottery]

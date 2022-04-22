@@ -4,14 +4,13 @@ pragma solidity ^0.8.13;
 contract Lottery {
   address public manager;
   address[] public players;
-  bool public finished = false;
-  address public winner;
+  address public prevWinner;
 
   constructor() {
     manager = msg.sender;
   }
 
-  function enter() public payable notFinished {
+  function enter() public payable {
     require(msg.value == 0.01 ether);
     players.push(msg.sender);
   }
@@ -21,29 +20,19 @@ contract Lottery {
     return uint256(keccak256(seed));
   }
 
-  function pickWinner() public onlyManager notFinished {
-    finished = true;
+  function pickWinner() public onlyManager {
     uint256 index = random() % players.length;
-    winner = players[index];
-    payable(winner).transfer(address(this).balance);
+    prevWinner = players[index];
+    payable(prevWinner).transfer(address(this).balance);
+    players = new address[](0);
   }
 
   function getPlayers() public view returns (address[] memory) {
     return players;
   }
 
-  function getBalance() public view returns (uint256) {
-    return address(this).balance;
-  }
-
   modifier onlyManager() {
     require(msg.sender == manager);
-    // call modified function
-    _;
-  }
-
-  modifier notFinished() {
-    require(!finished);
     // call modified function
     _;
   }

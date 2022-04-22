@@ -10,13 +10,13 @@ type LoadingBackdropProps = {
 const LoadingBackdrop: React.FC<LoadingBackdropProps> = (props) => {
   const { children, loading = true } = props;
   return (
-    <div className={styles.root}>
+    <>
       {children}
       <Spin
         size="large"
         className={clsx(styles.spin, { [styles.notLoading]: !loading })}
       />
-    </div>
+    </>
   );
 };
 
