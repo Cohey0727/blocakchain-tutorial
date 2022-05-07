@@ -2,7 +2,7 @@ import { Layout as BaseLayout, Menu, MenuProps } from "antd";
 import { makeVar, useReactiveVar } from "@apollo/client";
 import { Outlet, Link } from "@tanstack/react-location";
 import { DesktopOutlined, PieChartOutlined } from "@ant-design/icons";
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 import LoadingBackdrop from "./components/LoadingBackdrop";
 import { css } from "@emotion/css";
 const { Header, Content, Footer, Sider } = BaseLayout;
