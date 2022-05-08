@@ -1,6 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+contract CampaignFactory {
+    address[] public deployedCampaigns;
+
+    function createCampaign(uint256 minimum) public {
+        Campaign newCampaign = new Campaign(minimum, msg.sender);
+        deployedCampaigns.push(address(newCampaign));
+    }
+
+    function getDeployedCampaign() public view returns (address[] memory) {
+        return deployedCampaigns;
+    }
+}
+
 struct Request {
     string id;
     uint256 value;
@@ -18,9 +31,11 @@ struct Contribution {
 }
 
 contract Campaign {
+    address public factory;
     address public manager;
     uint256 public minimumContribution;
     mapping(address => Contribution) public contributions;
+    uint256 contributionCount;
     mapping(string => Request) public requests;
 
     modifier onlyManager() {
@@ -36,8 +51,9 @@ contract Campaign {
         _;
     }
 
-    constructor(uint256 minimum) {
-        manager = msg.sender;
+    constructor(uint256 minimum, address creator) {
+        factory = msg.sender;
+        manager = creator;
         minimumContribution = minimum;
     }
 
@@ -47,6 +63,7 @@ contract Campaign {
             value: msg.value,
             timestamp: block.timestamp
         });
+        contributionCount++;
     }
 
     function createRequest(
@@ -93,5 +110,17 @@ contract Campaign {
 
         request.approvals[msg.sender] = false;
         request.approvalCount--;
+    }
+
+    function finalizeRequest(string memory requestId) public onlyManager {
+        Request storage request = requests[requestId];
+        // must be initialized
+        require(request.initialized);
+        // must be not completed
+        require(!request.completed);
+
+        // 50% of contributers must approve the request
+        require(contributionCount / 2 == request.approvalCount);
+        request.completed = true;
     }
 }
