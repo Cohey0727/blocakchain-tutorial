@@ -51,6 +51,12 @@ contract Campaign {
         _;
     }
 
+    modifier mustBeInitialized(string memory requestId) {
+        Request storage request = requests[requestId];
+        require(request.initialized);
+        _;
+    }
+
     constructor(uint256 minimum, address creator) {
         factory = msg.sender;
         manager = creator;
@@ -85,11 +91,13 @@ contract Campaign {
         newRequest.approvalCount = 0;
     }
 
-    function approvalRequest(string memory requestId) public onlyContributer {
+    function approvalRequest(string memory requestId)
+        public
+        onlyContributer
+        mustBeInitialized(requestId)
+    {
         Request storage request = requests[requestId];
 
-        // must be initialized
-        require(request.initialized);
         // must be not approved
         require(!request.approvals[msg.sender]);
 
@@ -100,11 +108,10 @@ contract Campaign {
     function disapprovalRequest(string memory requestId)
         public
         onlyContributer
+        mustBeInitialized(requestId)
     {
         Request storage request = requests[requestId];
 
-        // must be initialized
-        require(request.initialized);
         // must be approved
         require(request.approvals[msg.sender]);
 
